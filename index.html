@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Care · Mal</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Care">
+<meta name="theme-color" content="#0d0f1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230d0f1a'/%3E%3Cpath d='M20 9a8 8 0 1 0 3 8 6 6 0 0 1-3-8z' fill='%239b7dff'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --night:#0d0f1a; --night-2:#141726; --veil:#1b1f33; --veil-2:#232744;
+    --line:#2c3150; --moon:#ece9f5; --mist:#a5a1c4; --faint:#726e93;
+    --amethyst:#9b7dff; --amethyst-soft:#3a2f66; --emerald:#4fc79a; --emerald-soft:#1f4a3c;
+    --rose:#df94b1; --amber:#e6b45a; --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(120% 55% at 50% -8%, rgba(155,125,255,.15), transparent 60%), var(--night);
+    background-attachment:fixed; color:var(--moon);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:calc(78px + env(safe-area-inset-bottom,0));
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 18px}
+  .serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+  .eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);font-weight:600}
+
+  /* tabs */
+  .tabs{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(16,18,30,.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom,0));
+    display:flex;justify-content:space-around;
+  }
+  .tab{
+    appearance:none;background:none;border:none;cursor:pointer;color:var(--faint);
+    font-family:inherit;font-size:10.5px;font-weight:600;letter-spacing:.02em;
+    display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 8px;flex:1;
+    border-radius:12px;transition:color .2s;
+  }
+  .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .tab[aria-selected="true"]{color:var(--amethyst)}
+  .tab:focus-visible{outline:2px solid var(--amethyst);outline-offset:2px}
+
+  .view{display:none;animation:fade .35s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  header{padding:30px 0 6px}
+  header .eyebrow{margin-bottom:9px}
+  header h1{font-size:29px;line-height:1.1;margin:0 0 9px;font-weight:600;letter-spacing:-.01em}
+  header h1 .accent{color:var(--amethyst)}
+  #hello{color:var(--mist);font-size:15px;margin:0;max-width:46ch}
+  h2.sec{font-size:20px;margin:26px 0 4px;font-weight:600}
+  p.lede{color:var(--faint);font-size:13px;margin:0 0 14px}
+
+  /* streak */
+  .streak{
+    display:flex;gap:14px;margin:20px 0 8px;
+  }
+  .streak .box{
+    flex:1;background:linear-gradient(180deg,var(--veil),var(--night-2));
+    border:1px solid var(--line);border-radius:var(--radius);padding:16px;text-align:center;
+  }
+  .streak .num{font-size:34px;font-weight:700;line-height:1;font-family:Georgia,serif}
+  .streak .cur .num{color:var(--amber)}
+  .streak .best .num{color:var(--amethyst)}
+  .streak .lbl{font-size:11px;color:var(--faint);letter-spacing:.14em;text-transform:uppercase;margin-top:7px}
+
+  .week{background:var(--veil);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;margin:14px 0}
+  .dots{display:flex;justify-content:space-between;gap:6px;margin-bottom:11px}
+  .day{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .day .lbl{font-size:11px;color:var(--faint)}
+  .day .orb{width:24px;height:24px;border-radius:50%;background:var(--night);border:1px solid var(--line);transition:all .3s}
+  .day.lit .orb{background:radial-gradient(circle at 35% 30%,#c3abff,var(--amethyst));border-color:transparent;box-shadow:0 0 12px rgba(155,125,255,.5)}
+  .day.today .lbl{color:var(--moon);font-weight:700}
+  .day.today .orb{outline:1.5px solid var(--amethyst);outline-offset:2px}
+  #weekMsg{font-size:13.5px;color:var(--mist);margin:0}
+  #weekMsg b{color:var(--emerald);font-weight:600}
+
+  /* habits */
+  .hd-row{display:flex;align-items:center;justify-content:space-between;margin:24px 0 4px}
+  .hd-row h2.sec{margin:0}
+  .mini-btn{background:none;border:1px solid var(--line);color:var(--mist);border-radius:9px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;font-weight:600}
+  .mini-btn:hover{border-color:var(--amethyst-soft)}
+  .task{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--veil);
+    border:1px solid var(--line);border-radius:13px;padding:13px 14px;margin-bottom:9px;cursor:pointer;
+    color:var(--moon);font-size:15px;font-family:inherit;transition:border-color .2s,background .2s}
+  .task:hover{border-color:var(--amethyst-soft)}
+  .task:focus-visible{outline:2px solid var(--amethyst);outline-offset:2px}
+  .check{width:23px;height:23px;border-radius:50%;border:1.6px solid var(--faint);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:13px;color:transparent}
+  .task .t-main{flex:1}
+  .task .t-note{display:block;font-size:12px;color:var(--faint);margin-top:1px}
+  .task .flame{font-size:12px;color:var(--amber);font-weight:700;flex-shrink:0;font-family:Georgia,serif}
+  .task[aria-pressed="true"]{background:var(--night-2);border-color:var(--emerald-soft)}
+  .task[aria-pressed="true"] .check{background:var(--emerald);border-color:var(--emerald);color:#06110c;box-shadow:0 0 10px rgba(79,199,154,.4)}
+  .task[aria-pressed="true"] .t-main{color:var(--mist)}
+  .task .del{background:none;border:none;color:var(--faint);font-size:17px;cursor:pointer;padding:2px 4px;flex-shrink:0;display:none}
+  body.editing .task .del{display:block}
+  body.editing .task .flame{display:none}
+  .add-habit{display:none;gap:8px;margin:4px 0 8px}
+  body.editing .add-habit{display:flex}
+  .add-habit input{flex:1;background:var(--night-2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;color:var(--moon);font-family:inherit;font-size:14px}
+  .add-habit input:focus{outline:none;border-color:var(--amethyst)}
+  .add-habit button{background:var(--amethyst);border:none;color:#100a24;font-weight:700;font-size:19px;width:46px;border-radius:11px;cursor:pointer}
+
+  /* breathing */
+  .breathe{background:linear-gradient(180deg,var(--veil-2),var(--night-2));border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px 18px;margin:22px 0;text-align:center;overflow:hidden}
+  .breathe h2{font-size:17px;margin:2px 0 4px;font-weight:600}
+  .breathe p.lead{color:var(--mist);font-size:13px;margin:0 auto 14px;max-width:40ch}
+  .stage{height:150px;display:flex;align-items:center;justify-content:center}
+  .orb-big{width:104px;height:104px;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,rgba(195,171,255,.95),rgba(155,125,255,.5) 60%,rgba(155,125,255,.15));
+    box-shadow:0 0 36px rgba(155,125,255,.4);transform:scale(.6);transition:transform 1s ease;
+    display:flex;align-items:center;justify-content:center}
+  .orb-big span{font-size:12px;color:#0e0a20;font-weight:700}
+  #breathCue{color:var(--moon);font-size:14.5px;margin:12px 0 3px;min-height:20px;font-weight:500}
+  #breathCount{color:var(--faint);font-size:12px;margin:0 0 14px;min-height:15px}
+  .btn{appearance:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border-radius:11px;
+    padding:11px 22px;border:1px solid var(--amethyst-soft);background:var(--amethyst);color:#100a24;transition:filter .2s}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:transparent;color:var(--mist);border-color:var(--line)}
+  .btn:focus-visible{outline:2px solid var(--amethyst);outline-offset:2px}
+
+  /* altitude */
+  .altitude{margin:24px 0 8px}
+  .altitude .intro{color:var(--mist);font-size:13.5px;margin:0 0 14px;max-width:52ch}
+  .add-row{display:flex;gap:9px;margin-bottom:16px}
+  .add-row input{flex:1;background:var(--night-2);border:1px solid var(--line);border-radius:11px;
+    padding:13px 14px;color:var(--moon);font-family:inherit;font-size:14.5px}
+  .add-row input::placeholder{color:var(--faint)}
+  .add-row input:focus{outline:none;border-color:var(--amethyst)}
+  .add-row button{background:var(--rose);border:none;color:#1c0c14;font-weight:700;font-size:20px;width:48px;border-radius:11px;cursor:pointer;flex-shrink:0}
+  #lines{list-style:none;margin:0;padding:0}
+  #lines li{background:var(--veil);border:1px solid var(--line);border-left:3px solid var(--rose);
+    border-radius:10px;padding:13px 15px;margin-bottom:10px;position:relative}
+  #lines .q{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-style:italic;font-size:15.5px;color:var(--moon);line-height:1.45}
+  #lines .d{font-size:11px;color:var(--faint);letter-spacing:.04em;margin-top:6px;text-transform:uppercase}
+  #lines .del{position:absolute;top:9px;right:9px;background:none;border:none;color:var(--faint);font-size:15px;cursor:pointer;padding:4px}
+  #lines .del:hover{color:var(--rose)}
+  .empty{text-align:center;color:var(--faint);font-size:13.5px;padding:20px 16px;border:1px dashed var(--line);border-radius:12px}
+  .empty .serif{color:var(--mist);font-style:italic;font-size:15px;display:block;margin-bottom:4px}
+
+  /* cards */
+  details.card{background:var(--veil);border:1px solid var(--line);border-radius:var(--radius);margin:12px 0;overflow:hidden}
+  details.card>summary{list-style:none;cursor:pointer;padding:16px;display:flex;align-items:center;gap:12px}
+  details.card>summary::-webkit-details-marker{display:none}
+  .card .ic{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+  .card .c-title{font-size:15.5px;font-weight:600;flex:1}
+  .card .c-title small{display:block;font-weight:400;color:var(--faint);font-size:12px;margin-top:1px}
+  .card .caret{color:var(--faint);transition:transform .2s;font-size:12px}
+  details[open].card .caret{transform:rotate(90deg)}
+  .card-body{padding:2px 17px 17px;color:var(--mist);font-size:14px}
+  .card-body h4{color:var(--moon);font-size:12.5px;letter-spacing:.02em;margin:15px 0 7px;font-weight:600}
+  .card-body h4:first-child{margin-top:6px}
+  .step{display:flex;gap:11px;padding:7px 0;border-top:1px solid var(--line)}
+  .step:first-of-type{border-top:none}
+  .step .n{color:var(--amethyst);font-weight:700;font-size:13px;min-width:15px;font-family:Georgia,serif}
+  .step b{color:var(--moon);font-weight:600}
+  .card-body ul{margin:8px 0 0;padding-left:18px}
+  .card-body li{margin:6px 0}
+  .card-body p{margin:9px 0}
+  .card-body a{color:var(--amethyst);text-decoration:none}
+  .card-body a:hover{text-decoration:underline}
+  .reframe{border-left:2px solid var(--emerald-soft);padding:3px 0 3px 14px;margin:14px 0}
+  .reframe .was{color:var(--faint);font-size:13px}
+  .reframe .now{color:var(--moon);font-size:14px;margin-top:2px}
+  .reframe .now b{color:var(--emerald);font-weight:600}
+
+  /* upkeep */
+  .upkeep{list-style:none;margin:0;padding:0}
+  .upkeep li{display:flex;align-items:center;gap:12px;background:var(--veil);border:1px solid var(--line);
+    border-radius:12px;padding:12px 14px;margin-bottom:9px}
+  .upkeep .u-main{flex:1;min-width:0}
+  .upkeep .u-name{font-size:14.5px;color:var(--moon)}
+  .upkeep .u-meta{font-size:11.5px;color:var(--faint);margin-top:2px}
+  .upkeep .u-meta.due{color:var(--amber)}
+  .upkeep .done{background:var(--amethyst-soft);border:1px solid var(--amethyst-soft);color:#d9ccff;
+    font-family:inherit;font-size:12px;font-weight:600;padding:8px 11px;border-radius:9px;cursor:pointer;flex-shrink:0}
+  .upkeep .done:hover{filter:brightness(1.15)}
+  .upkeep .del{background:none;border:none;color:var(--faint);font-size:16px;cursor:pointer;display:none;flex-shrink:0}
+  body.editing .upkeep .del{display:block}
+
+  /* palette / style */
+  .palette .sw-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+  .sw{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--moon);background:var(--night-2);
+    border:1px solid var(--line);border-radius:20px;padding:5px 11px 5px 6px}
+  .sw i{width:14px;height:14px;border-radius:50%;display:block;border:1px solid rgba(255,255,255,.14)}
+  .formula{font-size:13.5px;color:var(--mist);margin:9px 0;padding-left:13px;border-left:2px solid var(--emerald-soft)}
+  .formula b{color:var(--moon)}
+
+  /* food / macros */
+  .macros{display:flex;gap:9px;margin:16px 0 6px}
+  .macro{flex:1;background:var(--veil);border:1px solid var(--line);border-radius:13px;padding:13px 6px;text-align:center}
+  .macro .v{font-size:21px;font-weight:700;font-family:Georgia,serif;line-height:1}
+  .macro.p .v{color:var(--emerald)} .macro.f .v{color:var(--amber)} .macro.c .v{color:var(--rose)} .macro.k .v{color:var(--amethyst)}
+  .macro .k{font-size:10.5px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+  .macro-note{background:var(--night-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    color:var(--mist);font-size:13px;margin:6px 0 4px}
+  .macro-note b{color:var(--moon)}
+  .shelf-note{color:var(--mist);font-size:13px;margin:2px 0 12px}
+  .shelf-note b{color:var(--rose)}
+  #shelf{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+  #shelf .chip-item{display:flex;align-items:center;gap:7px;background:var(--veil);border:1px solid var(--line);
+    border-radius:20px;padding:8px 13px;font-size:13.5px;color:var(--moon)}
+  #shelf .chip-item .x{background:none;border:none;color:var(--faint);font-size:14px;cursor:pointer;padding:0;display:none}
+  body.editing #shelf .chip-item .x{display:block}
+  #staples{list-style:none;margin:0;padding:0}
+  #staples li{display:flex;align-items:center;gap:12px;background:var(--veil);border:1px solid var(--line);
+    border-radius:11px;padding:11px 14px;margin-bottom:8px;cursor:pointer}
+  #staples li .box{width:21px;height:21px;border-radius:6px;border:1.6px solid var(--faint);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent;transition:all .18s}
+  #staples li[data-need="1"] .box{background:var(--amber);border-color:var(--amber);color:#1a1206}
+  #staples li .nm{flex:1;font-size:14.5px;color:var(--moon)}
+  #staples li[data-need="1"] .nm{color:var(--amber)}
+  #staples li .x{background:none;border:none;color:var(--faint);font-size:16px;cursor:pointer;display:none;flex-shrink:0}
+  body.editing #staples li .x{display:block}
+  .buy-count{font-size:12px;color:var(--faint);margin:0 0 12px}
+  .buy-count b{color:var(--amber)}
+  .plan-day{background:var(--veil);border:1px solid var(--line);border-radius:13px;padding:12px 14px;margin-bottom:10px}
+  .plan-day .dname{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amethyst);font-weight:700;margin-bottom:7px}
+  .plan-day textarea{width:100%;background:var(--night-2);border:1px solid var(--line);border-radius:10px;
+    color:var(--moon);font-family:inherit;font-size:14px;padding:10px 12px;resize:vertical;min-height:52px;line-height:1.5}
+  .plan-day textarea::placeholder{color:var(--faint)}
+  .plan-day textarea:focus{outline:none;border-color:var(--amethyst)}
+  #goto{list-style:none;margin:8px 0 0;padding:0}
+  #goto li{background:var(--veil);border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin-bottom:8px;position:relative}
+  #goto .g-name{font-size:14.5px;color:var(--moon);font-weight:600;padding-right:20px}
+  #goto .g-mac{font-size:12.5px;color:var(--emerald);margin-top:3px;font-weight:500}
+  #goto .g-link{display:inline-block;font-size:12px;color:var(--amethyst);text-decoration:none;margin-top:6px}
+  #goto .g-link:hover{text-decoration:underline}
+  #goto details{margin-top:8px}
+  #goto details summary{font-size:12px;color:var(--faint);cursor:pointer;list-style:none}
+  #goto details summary::-webkit-details-marker{display:none}
+  #goto details .body{font-size:13px;color:var(--mist);white-space:pre-wrap;margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
+  #goto .del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--faint);font-size:15px;cursor:pointer;padding:3px}
+  #goto .del:hover{color:var(--rose)}
+  .recipe-add{background:var(--night-2);border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:4px}
+  .recipe-add input,.recipe-add textarea{width:100%;background:var(--veil);border:1px solid var(--line);border-radius:9px;
+    color:var(--moon);font-family:inherit;font-size:14px;padding:10px 12px;margin-bottom:8px}
+  .recipe-add textarea{resize:vertical;min-height:56px;line-height:1.5}
+  .recipe-add input::placeholder,.recipe-add textarea::placeholder{color:var(--faint)}
+  .recipe-add input:focus,.recipe-add textarea:focus{outline:none;border-color:var(--amethyst)}
+  .recipe-add button{width:100%;background:var(--amethyst);border:none;color:#100a24;font-weight:700;font-size:14px;
+    padding:11px;border-radius:9px;cursor:pointer}
+
+  .soft-note{background:var(--night-2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;
+    margin:22px 0 10px;color:var(--mist);font-size:13px;line-height:1.6}
+  .soft-note b{color:var(--moon)}
+  .foot{text-align:center;color:var(--faint);font-size:12px;margin:22px 0;line-height:1.6}
+  .foot button{background:none;border:none;color:var(--faint);text-decoration:underline;cursor:pointer;font-size:12px;font-family:inherit}
+
+  @media (prefers-reduced-motion:reduce){.view{animation:none}.orb-big{transition:opacity .4s!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ TODAY ============ -->
+  <section class="view active" data-tab="today">
+    <header>
+      <span class="eyebrow">Your corner · just for Mal</span>
+      <h1 class="serif">Take better care of <span class="accent">you</span>.</h1>
+      <p id="hello">…</p>
+    </header>
+
+    <div class="streak">
+      <div class="box cur"><div class="num" id="curStreak">0</div><div class="lbl">Day streak</div></div>
+      <div class="box best"><div class="num" id="bestStreak">0</div><div class="lbl">Best ever</div></div>
+    </div>
+
+    <div class="week">
+      <div class="dots" id="dots"></div>
+      <p id="weekMsg"></p>
+    </div>
+
+    <div class="hd-row">
+      <h2 class="sec serif">Today's habits</h2>
+      <button class="mini-btn" id="editHabits">Edit</button>
+    </div>
+    <p class="lede">One counts. You don't have to do all of them.</p>
+    <div id="tasks"></div>
+    <div class="add-habit">
+      <input id="habitInput" type="text" placeholder="New habit…" maxlength="40">
+      <button id="addHabit" aria-label="Add habit">+</button>
+    </div>
+
+    <div class="breathe">
+      <span class="eyebrow">For the wired nights</span>
+      <h2 class="serif">One reset breath</h2>
+      <p class="lead">Two breaths in, one long breath out — the physiological sigh. Settles you faster than trying to relax.</p>
+      <div class="stage"><div class="orb-big" id="orb"><span id="orbTxt"></span></div></div>
+      <p id="breathCue">Ready when you are.</p>
+      <p id="breathCount"></p>
+      <button class="btn" id="breathBtn">Begin</button>
+    </div>
+
+    <section class="altitude">
+      <span class="eyebrow">The good-note collection</span>
+      <h2 class="sec serif" style="margin-top:6px">One line of altitude</h2>
+      <p class="intro">Your paper takes the venting. This keeps only the good endings — the positive record your journal never handed back. Reread it whenever you forget you're doing okay.</p>
+      <div class="add-row">
+        <input id="lineInput" type="text" placeholder="One thing that didn't suck today…" maxlength="200">
+        <button id="addLine" aria-label="Save line">+</button>
+      </div>
+      <ul id="lines"></ul>
+    </section>
+  </section>
+
+  <!-- ============ BEAUTY ============ -->
+  <section class="view" data-tab="beauty">
+    <header><span class="eyebrow">Upkeep</span><h1 class="serif">Beauty</h1>
+      <p id="hello2">Your routine, decided — and the recurring stuff so nothing sneaks up on you.</p></header>
+
+    <details class="card" open>
+      <summary><span class="ic">🧴</span><span class="c-title">Skincare routine<small>Gentle &amp; hydrating — acne-prone but drier now</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <p>Barrier-first: calm redness, treat breakouts without stripping. Your exact lineup:</p>
+        <h4>Morning</h4>
+        <div class="step"><span class="n">1</span><div><b>La Roche-Posay Toleriane</b> Hydrating Gentle Cleanser</div></div>
+        <div class="step"><span class="n">2</span><div><b>Toleriane Double Repair</b> moisturizer</div></div>
+        <div class="step"><span class="n">3</span><div><b>EltaMD UV Clear SPF</b> — never skip it</div></div>
+        <h4>Night</h4>
+        <div class="step"><span class="n">1</span><div><b>Toleriane</b> Hydrating Gentle Cleanser</div></div>
+        <div class="step"><span class="n">2</span><div><b>Good Molecules 10% Niacinamide</b> — let it absorb</div></div>
+        <div class="step"><span class="n">3</span><div><b>Good Molecules 10% Azelaic Acid</b> — a few nights/wk</div></div>
+        <div class="step"><span class="n">4</span><div><b>Toleriane Double Repair</b> on top</div></div>
+        <h4>The rules</h4>
+        <ul>
+          <li><b>One new thing at a time</b>, a few days apart — so you know what to blame if skin gets weird.</li>
+          <li><b>Niacinamide only at night</b> (it can pill under SPF).</li>
+          <li>Azelaic: start <b>every other night</b>, pea-size, whole face.</li>
+          <li>Later add <b>Differin</b> 2 nights/wk on <i>non-azelaic</i> nights — never both same night.</li>
+          <li>Painful/cystic breakouts → a dermatologist can prescribe. Worth it.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="ic">🌊</span><span class="c-title">Curl routine<small>Embrace the wave — fewer products, better technique</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <p>Waves need the <i>opposite</i> of the curly-girl internet: lightweight products, not much, and technique over slather. Only on wash days (2–3×/wk) — not daily.</p>
+        <h4>The whole kit (don't buy more)</h4>
+        <ul>
+          <li><b>Verb Ghost</b> shampoo + conditioner (their pick for fine, frizzy, wavy — light enough to let the wave show)</li>
+          <li><b>One lightweight leave-in</b></li>
+          <li><b>One light styler</b> — Verb Ghost Air Dry Whip keeps it all one brand, or Briogeo Curl Charisma gel</li>
+          <li>Skip creams &amp; the Curl duo — too heavy, they flatten waves</li>
+          <li><i>Backup:</i> Verb Hydrate for dry ends / winter, especially until the cut removes damaged length</li>
+        </ul>
+        <h4>Wash day</h4>
+        <div class="step"><span class="n">1</span><div>Shampoo scalp, conditioner mid-to-ends, finger-comb through in the shower.</div></div>
+        <div class="step"><span class="n">2</span><div>Get out — <b>don't wring or towel-rough.</b> Hair stays <i>soaking</i>.</div></div>
+        <div class="step"><span class="n">3</span><div>Scrunch in leave-in, then gel — flip head, scrunch <b>upward</b>.</div></div>
+        <div class="step"><span class="n">4</span><div><b>Hands off while drying.</b> Dyson diffuser on <b>low heat, low speed</b> — cup sections up, don't press flat. Stop ~80% dry.</div></div>
+        <div class="step"><span class="n">5</span><div>Once dry, <b>scrunch out the crunch</b> — break the gel cast into soft waves. Optional drop of oil.</div></div>
+        <div class="step"><span class="n">6</span><div>Night: loose <b>pineapple</b> (top-of-head scrunchie) + satin pillowcase.</div></div>
+        <p style="margin-top:14px"><b>Start now, refine after the cut.</b> Build the habit cheaply now — but don't stockpile products. The cut removes damaged ends and adds curl-friendly layers, so your waves will behave differently (better) after.</p>
+      </div>
+    </details>
+
+    <div class="hd-row">
+      <h2 class="sec serif">Maintenance</h2>
+      <button class="mini-btn" id="editUpkeep">Edit</button>
+    </div>
+    <p class="lede">Tap "Done" when you do it — it'll track when each is due again.</p>
+    <ul class="upkeep" id="upkeep"></ul>
+    <div class="add-habit" id="addUpkeepRow" style="margin-top:2px">
+      <input id="upkeepInput" type="text" placeholder="Task name…" maxlength="40">
+      <input id="upkeepWeeks" type="number" placeholder="wks" min="1" max="104" style="max-width:70px">
+      <button id="addUpkeep" aria-label="Add task">+</button>
+    </div>
+  </section>
+
+  <!-- ============ STYLE ============ -->
+  <section class="view" data-tab="style">
+    <header><span class="eyebrow">Reformed emo · Winter · plus &amp; proud</span><h1 class="serif">Style</h1>
+      <p id="hello3">Your palette and formulas. The full closet-audit checklist lives in its own file.</p></header>
+
+    <details class="card palette" open>
+      <summary><span class="ic">🎨</span><span class="c-title">Your buy-filter<small>Cool Winter jewel tones</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <div class="sw-row">
+          <span class="sw"><i style="background:#0c0d12"></i>black</span>
+          <span class="sw"><i style="background:#2f3140"></i>charcoal</span>
+          <span class="sw"><i style="background:#1c2740"></i>navy</span>
+          <span class="sw"><i style="background:#f2f1f6"></i>white</span>
+          <span class="sw"><i style="background:#1f7a5c"></i>emerald</span>
+          <span class="sw"><i style="background:#1f5fa8"></i>sapphire</span>
+          <span class="sw"><i style="background:#6b46c1"></i>amethyst</span>
+          <span class="sw"><i style="background:#b0246b"></i>magenta</span>
+          <span class="sw"><i style="background:#7a1f3d"></i>cool wine</span>
+          <span class="sw"><i style="background:#166a6a"></i>teal</span>
+          <span class="sw"><i style="background:#c9c6d8"></i>silver</span>
+        </div>
+        <p style="color:var(--faint);font-size:12.5px">Leave on the rack: warm browns, camel, olive, rust/orange, mustard, gold-yellow. Metals: silver over gold.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="ic">👗</span><span class="c-title">Outfit formulas<small>Getting dressed on autopilot</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <p class="formula"><b>Office:</b> trouser/skirt + jewel-tone or crisp top + blazer or long cardigan + boots + silver.</p>
+        <p class="formula"><b>Casual:</b> dark jeans + tucked tee + overshirt/hoodie + combat boots + one silver piece.</p>
+        <p class="formula"><b>Dressy:</b> jewel or velvet dress + heeled boot + statement earring + berry lip — or faux-leather pant + satin cami + blazer.</p>
+        <p class="formula"><b>The rule:</b> define the waist, one colour moment, keep metals silver.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="ic">🥾</span><span class="c-title">Boots &amp; where to shop<small>Confirmed fits</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <p><b>Thursday Coda</b> — comes in wide! Size up a half (leather stretches). Free 60-day returns on unworn.</p>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="https://www.eloquii.com/shop/da-fitted-blazers.html" target="_blank" rel="noopener">Eloquii</a> — blazers, wide-leg trousers, jewel/velvet dresses (14–32)</li>
+          <li><a href="https://www.torrid.com" target="_blank" rel="noopener">Torrid</a> — tees, boots, basics (has stores)</li>
+          <li>Secondhand: Poshmark &amp; ThredUp to stretch the budget</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ FOOD ============ -->
+  <section class="view" data-tab="food">
+    <header><span class="eyebrow">~1,900 kcal · protein first</span><h1 class="serif">Food</h1>
+      <p id="hello4">Your targets, your week. Plan around protein and fiber — close-enough, consistently.</p></header>
+
+    <div class="macros">
+      <div class="macro p"><div class="v">150</div><div class="k">Protein g</div></div>
+      <div class="macro f"><div class="v">100</div><div class="k">Fat g</div></div>
+      <div class="macro c"><div class="v">100</div><div class="k">Carb g</div></div>
+      <div class="macro k"><div class="v">1.9k</div><div class="k">kcal</div></div>
+    </div>
+    <div class="macro-note"><b>Protein's the anchor</b> — hit 150g first, it never moves. Lean on fiber-rich carbs (keeps things moving on Mounjaro). Fat's roomy on purpose so your beef fits.</div>
+
+    <div class="hd-row"><h2 class="sec serif">Tired &amp; hungry shelf</h2>
+      <button class="mini-btn" id="editShelf">Edit</button></div>
+    <p class="shelf-note">When you're fried, you don't cook — you <b>assemble</b>. Protein + something = a real meal. A snack plate counts. This is the plan, not the fallback.</p>
+    <div id="shelf"></div>
+    <div class="add-row" style="margin-top:6px">
+      <input id="shelfInput" type="text" placeholder="Add a no-think grab…" maxlength="40">
+      <button id="addShelf" aria-label="Add">+</button>
+    </div>
+
+    <div class="hd-row" style="margin-top:24px"><h2 class="sec serif">This week's plan</h2>
+      <button class="mini-btn" id="clearWeek">Clear</button></div>
+    <div id="planner"></div>
+
+    <h2 class="sec serif">Recipe box</h2>
+    <p class="lede">Your saved winners — TikTok link, macros, and ingredients in one tap. Paste me a recipe and I'll hand back the macros to drop in here.</p>
+    <ul id="goto"></ul>
+    <div class="recipe-add">
+      <input id="rcpName" type="text" placeholder="Recipe name" maxlength="80">
+      <input id="rcpLink" type="text" placeholder="TikTok / recipe link (optional)" maxlength="300">
+      <input id="rcpMac" type="text" placeholder="Macros per serving, e.g. 520 kcal · 45P / 30C / 22F" maxlength="90">
+      <textarea id="rcpNotes" placeholder="Ingredients / notes (optional)" maxlength="1500"></textarea>
+      <button id="addMeal">Save to recipe box</button>
+    </div>
+
+    <div class="hd-row" style="margin-top:26px"><h2 class="sec serif">Staple grocery list</h2>
+      <button class="mini-btn" id="editStaples">Edit</button></div>
+    <p class="buy-count" id="buyCount"></p>
+    <p class="lede">Tap what you're low on — that's your buy-list this trip. Untick when it's restocked. No rebuilding it every week.</p>
+    <ul id="staples"></ul>
+    <div class="add-row" style="margin-top:2px">
+      <input id="stapleInput" type="text" placeholder="Add a staple…" maxlength="40">
+      <button id="addStaple" aria-label="Add staple">+</button>
+    </div>
+  </section>
+
+  <!-- ============ MIND ============ -->
+  <section class="view" data-tab="mind">
+    <header><span class="eyebrow">The inside work</span><h1 class="serif">Mind</h1>
+      <p id="hello5">For the hard moments. Read whichever one you need.</p></header>
+
+    <details class="card" open>
+      <summary><span class="ic">🩶</span><span class="c-title">When you're being hard on yourself<small>Read this. It's true.</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <div class="reframe"><div class="was">"I slacked off."</div><div class="now">Life got full and the optional stuff fell away — exactly what optional stuff does. <b>Not failure.</b></div></div>
+        <div class="reframe"><div class="was">"I'm not consistent."</div><div class="now">You kept the lunch walk going the whole time — social, scheduled, protected. <b>That's the hardest one, and you held it.</b></div></div>
+        <div class="reframe"><div class="was">"My journal sounds whiny."</div><div class="now">It reads negative because of <i>when</i> you reach for it. It's a venting valve, <b>not a highlight reel.</b></div></div>
+        <div class="reframe"><div class="was">"Rereading this is cringe."</div><div class="now">It reads overblown because you're not in it anymore. <b>That gap is proof you moved through it.</b></div></div>
+        <div class="reframe"><div class="was">"I have to fix everything."</div><div class="now">Pick <b>one</b> anchor — the smallest version that survives your worst day. Then add the next.</div></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="ic">📓</span><span class="c-title">How you journal now<small>Dump hard, end on altitude</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <div class="step"><span class="n">1</span><div><b>Dump first.</b> Messy, unfair, repetitive. No editing. The paper can take it.</div></div>
+        <div class="step"><span class="n">2</span><div><b>Then one line up.</b> One sentence that isn't the wound. (Save it in the Today tab ↑)</div></div>
+        <div class="step"><span class="n">3</span><div><b>Done.</b> Two lines or two pages, both count.</div></div>
+        <h4>Guardrails</h4>
+        <ul>
+          <li>Keep it on <b>paper</b>, not a screen — especially before bed.</li>
+          <li><b>Don't reread</b> old entries for a good while. Rereading too soon is where the spiral lives.</li>
+          <li>"I showed up and wrote this" <i>is</i> the altitude line on a hard day.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="ic">🌙</span><span class="c-title">Rough-night toolkit<small>For when sleep won't come</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <ul>
+          <li>Run a few rounds of the <b>reset breath</b> (Today tab).</li>
+          <li>Get <b>morning light</b> tomorrow — resets a rattled clock.</li>
+          <li>Don't chase it with a long nap the next day.</li>
+          <li><b>One bad night isn't a pattern.</b> A wired night after travel has a cause.</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="soft-note"><b>One honest note.</b> If the erratic moods start showing up without a trigger, or scare you a little, that's worth a real conversation with a doctor — not because anything's wrong with you, but because moods sometimes have fixable causes, and you deserve to feel steady, not just cope well.</div>
+
+    <p class="foot">Yours, saved on this device only.<br><button id="resetBtn">Reset everything</button></p>
+  </section>
+
+</div>
+
+<!-- tab bar -->
+<nav class="tabs" role="tablist">
+  <button class="tab" data-go="today" aria-selected="true" role="tab">
+    <svg viewBox="0 0 24 24"><path d="M20 14a8 8 0 1 1-9-9 6.5 6.5 0 0 0 9 9z"/></svg>Today</button>
+  <button class="tab" data-go="beauty" role="tab">
+    <svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.1z"/><circle cx="18" cy="17" r="1.4"/><circle cx="6" cy="16" r="1"/></svg>Beauty</button>
+  <button class="tab" data-go="style" role="tab">
+    <svg viewBox="0 0 24 24"><path d="M12 3a2 2 0 0 0-2 2c0 1 .8 1.6 2 2.2L3 14v3h18v-3l-7-4.8C15.2 6.6 16 6 16 5a2 2 0 0 0-2-2"/></svg>Style</button>
+  <button class="tab" data-go="food" role="tab">
+    <svg viewBox="0 0 24 24"><path d="M5 3v7a2 2 0 0 0 2 2M9 3v9M7 12v9M17 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg>Food</button>
+  <button class="tab" data-go="mind" role="tab">
+    <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9a4.2 4.2 0 0 1 7.5-3 4.2 4.2 0 0 1 7.5 3c-2 4.6-6 9-6 9z"/></svg>Mind</button>
+</nav>
+
+<script>
+"use strict";
+const KEY="mal-care-v2";
+const DEFAULT_HABITS=[
+  {id:"moved",label:"Moved my body",note:"The lunch walk counts."},
+  {id:"skinAM",label:"Skincare — AM",note:"Cleanse · moisturize · SPF"},
+  {id:"skinPM",label:"Skincare — PM",note:"Cleanse · treat · moisturize"},
+  {id:"journaled",label:"Journaled",note:"Vent, then altitude line"},
+  {id:"breathed",label:"Reset breath",note:"Even one round"},
+  {id:"water",label:"Drank water",note:"Fiber + water = happy gut on Mounjaro"}
+];
+const DEFAULT_UPKEEP=[
+  {id:"color",label:"Colour / root touch-up",weeks:7},
+  {id:"trim",label:"Curl-shaping trim",weeks:11},
+  {id:"brows",label:"Brows shaped",weeks:4},
+  {id:"nails",label:"Nails",weeks:3},
+  {id:"restock",label:"Restock skincare actives",weeks:9},
+  {id:"derm",label:"Dermatologist skin check",weeks:52},
+  {id:"dentist",label:"Dentist",weeks:26}
+];
+const DAYS=[["mon","Monday"],["tue","Tuesday"],["wed","Wednesday"],["thu","Thursday"],["fri","Friday"],["sat","Saturday"],["sun","Sunday"]];
+const DEFAULT_SHELF=["Cheese (string, cubes, Babybel)","Deli meat / salami — roll & eat","Snack plate: cheese + meat + crackers + olives","Rotisserie chicken","Pre-cooked shrimp","Greek yogurt","Cottage cheese","Hard-boiled eggs","Tuna / salmon packets","Protein shake","Edamame (microwave)","Jerky / meat sticks"];
+const DEFAULT_STAPLES=["String cheese / cheese cubes","Deli meat / salami","Crackers","Olives & pickles","Greek yogurt","Cottage cheese","Eggs","Rotisserie chicken","Pre-cooked shrimp","Protein shakes","Tuna / salmon packets","Frozen edamame","Berries / fruit","Baby carrots / snap peas","Hummus","Ground beef & sweet potato"];
+
+let S={habits:null,upkeepDefs:null,days:{},altitudes:[],upkeep:{},meals:{},goto:null,best:0,shelf:null,staples:null};
+
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
+  if(!S.habits)S.habits=DEFAULT_HABITS.map(h=>({...h}));
+  if(!S.upkeepDefs)S.upkeepDefs=DEFAULT_UPKEEP.map(u=>({...u}));
+  if(!S.days)S.days={};
+  if(!S.altitudes)S.altitudes=[];
+  if(!S.upkeep)S.upkeep={};
+  if(!S.meals)S.meals={};
+  if(!S.goto)S.goto=[{id:1,name:"Beef & Sweet Potato Bowl",mac:"~1,067 kcal · 73P / 72C / 55F · makes 3"}];
+  if(typeof S.best!=="number")S.best=0;
+  if(!S.shelf)S.shelf=DEFAULT_SHELF.slice();
+  if(!S.staples)S.staples=DEFAULT_STAPLES.map((n,i)=>({id:"s"+i,name:n,need:false}));
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+function tkey(d=new Date()){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function fmt(iso){const[y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric"});}
+function daysAgo(iso){const[y,m,d]=iso.split("-").map(Number);const then=new Date(y,m-1,d);const now=new Date();now.setHours(0,0,0,0);return Math.round((now-then)/86400000);}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function dayHasAny(key){const d=S.days[key];return d&&Object.values(d).some(Boolean);}
+
+/* ---- tabs ---- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click",()=>{
+    const go=t.dataset.go;
+    document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===t)));
+    document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.dataset.tab===go));
+    window.scrollTo(0,0);
+  });
+});
+
+/* ---- greeting ---- */
+function greeting(){
+  const h=new Date().getHours();let line;
+  if(h<5)line="It's late. Tonight's only job is rest. Take a breath below and let the day be over.";
+  else if(h<12)line="Morning, Mal. Whatever you manage today is enough. One thing counts.";
+  else if(h<18)line="However the day's going — you get to be gentle with yourself in the middle of it.";
+  else line="Evening, Mal. Set the day down. Vent what you need, then end on one good line.";
+  document.getElementById("hello").textContent=line;
+}
+
+/* ---- streaks ---- */
+function currentStreak(){
+  let n=0;const start=new Date();
+  if(!dayHasAny(tkey(start))){start.setDate(start.getDate()-1);if(!dayHasAny(tkey(start)))return 0;}
+  while(dayHasAny(tkey(start))){n++;start.setDate(start.getDate()-1);}
+  return n;
+}
+function habitStreak(id){
+  let n=0;const d=new Date();
+  if(!(S.days[tkey(d)]&&S.days[tkey(d)][id])){d.setDate(d.getDate()-1);if(!(S.days[tkey(d)]&&S.days[tkey(d)][id]))return 0;}
+  while(S.days[tkey(d)]&&S.days[tkey(d)][id]){n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function refreshStreak(){
+  const c=currentStreak();
+  if(c>S.best){S.best=c;}
+  document.getElementById("curStreak").textContent=c;
+  document.getElementById("bestStreak").textContent=S.best;
+}
+
+/* ---- week ---- */
+function renderWeek(){
+  const dots=document.getElementById("dots");dots.innerHTML="";let shown=0;
+  const ini=["S","M","T","W","T","F","S"];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const key=tkey(d);const lit=dayHasAny(key);if(lit)shown++;
+    const el=document.createElement("div");
+    el.className="day"+(lit?" lit":"")+(i===0?" today":"");
+    el.innerHTML='<span class="orb"></span><span class="lbl">'+ini[d.getDay()]+'</span>';
+    dots.appendChild(el);
+  }
+  const m=document.getElementById("weekMsg");
+  if(shown===0)m.innerHTML="A quiet week so far. The next tap can be tiny — that's allowed.";
+  else if(shown>=6)m.innerHTML="You showed up <b>"+shown+" of 7 days</b>. Look at that. That's a person taking care of herself.";
+  else m.innerHTML="You showed up <b>"+shown+" of 7 days</b>. That's not slacking — that's steady.";
+}
+
+/* ---- habits ---- */
+function renderTasks(){
+  const wrap=document.getElementById("tasks");wrap.innerHTML="";
+  const today=S.days[tkey()]||{};
+  S.habits.forEach(h=>{
+    const on=!!today[h.id];const st=habitStreak(h.id);
+    const b=document.createElement("button");
+    b.className="task";b.setAttribute("aria-pressed",on);b.type="button";
+    b.innerHTML='<span class="check">✓</span><span class="t-main">'+esc(h.label)+
+      '<span class="t-note">'+esc(h.note||"")+'</span></span>'+
+      (st>1?'<span class="flame">🔥'+st+'</span>':'')+
+      '<span class="del" data-del="'+h.id+'" aria-label="Remove">✕</span>';
+    b.addEventListener("click",e=>{
+      if(e.target.dataset.del){removeHabit(e.target.dataset.del);return;}
+      if(document.body.classList.contains("editing"))return;
+      toggleTask(h.id);
+    });
+    wrap.appendChild(b);
+  });
+}
+function toggleTask(id){
+  const key=tkey();if(!S.days[key])S.days[key]={};
+  if(S.days[key][id])delete S.days[key][id];else S.days[key][id]=true;
+  save();renderTasks();renderWeek();refreshStreak();
+}
+function addHabit(){
+  const inp=document.getElementById("habitInput");const v=inp.value.trim();if(!v)return;
+  S.habits.push({id:"h"+Date.now(),label:v,note:""});inp.value="";save();renderTasks();
+}
+function removeHabit(id){
+  if(!confirm("Remove this habit?"))return;
+  S.habits=S.habits.filter(h=>h.id!==id);save();renderTasks();
+}
+document.getElementById("addHabit").addEventListener("click",addHabit);
+document.getElementById("habitInput").addEventListener("keydown",e=>{if(e.key==="Enter")addHabit();});
+document.getElementById("editHabits").addEventListener("click",function(){
+  const on=document.body.classList.toggle("editing");this.textContent=on?"Done":"Edit";
+});
+
+/* ---- altitude ---- */
+function renderLines(){
+  const ul=document.getElementById("lines");ul.innerHTML="";
+  if(!S.altitudes.length){ul.innerHTML='<div class="empty"><span class="serif">No lines yet.</span>The first can be tiny. "I got out of bed" is a real one.</div>';return;}
+  S.altitudes.slice().reverse().forEach(it=>{
+    const li=document.createElement("li");
+    li.innerHTML='<div class="q">"'+esc(it.text)+'"</div><div class="d">'+fmt(it.date)+'</div><button class="del" data-id="'+it.id+'" aria-label="Remove">✕</button>';
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll(".del").forEach(b=>b.addEventListener("click",()=>{
+    S.altitudes=S.altitudes.filter(a=>String(a.id)!==b.dataset.id);save();renderLines();
+  }));
+}
+function addLine(){
+  const inp=document.getElementById("lineInput");const v=inp.value.trim();if(!v)return;
+  S.altitudes.push({id:Date.now(),date:tkey(),text:v});
+  const key=tkey();if(!S.days[key])S.days[key]={};if(S.habits.some(h=>h.id==="journaled"))S.days[key].journaled=true;
+  inp.value="";save();renderLines();renderTasks();renderWeek();refreshStreak();
+}
+document.getElementById("addLine").addEventListener("click",addLine);
+document.getElementById("lineInput").addEventListener("keydown",e=>{if(e.key==="Enter")addLine();});
+
+/* ---- upkeep ---- */
+function renderUpkeep(){
+  const ul=document.getElementById("upkeep");ul.innerHTML="";
+  S.upkeepDefs.forEach(u=>{
+    const last=S.upkeep[u.id];let meta,due=false;
+    if(!last)meta="Every ~"+u.weeks+" wks · not logged yet";
+    else{const ago=daysAgo(last);const dueIn=u.weeks*7-ago;
+      if(dueIn<=0){meta="Due now · last "+fmt(last);due=true;}
+      else meta="Next in ~"+Math.ceil(dueIn/7)+" wk"+(Math.ceil(dueIn/7)===1?"":"s")+" · last "+fmt(last);}
+    const li=document.createElement("li");
+    li.innerHTML='<div class="u-main"><div class="u-name">'+esc(u.label)+'</div><div class="u-meta'+(due?" due":"")+'">'+meta+'</div></div>'+
+      '<button class="done" data-done="'+u.id+'">Done</button><button class="del" data-del="'+u.id+'" aria-label="Remove">✕</button>';
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll("[data-done]").forEach(b=>b.addEventListener("click",()=>{
+    S.upkeep[b.dataset.done]=tkey();save();renderUpkeep();
+  }));
+  ul.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{
+    if(!confirm("Remove this task?"))return;
+    S.upkeepDefs=S.upkeepDefs.filter(u=>u.id!==b.dataset.del);delete S.upkeep[b.dataset.del];save();renderUpkeep();
+  }));
+}
+function addUpkeep(){
+  const n=document.getElementById("upkeepInput");const w=document.getElementById("upkeepWeeks");
+  const v=n.value.trim();const wk=parseInt(w.value,10);if(!v||!wk)return;
+  S.upkeepDefs.push({id:"u"+Date.now(),label:v,weeks:wk});n.value="";w.value="";save();renderUpkeep();
+}
+document.getElementById("addUpkeep").addEventListener("click",addUpkeep);
+document.getElementById("editUpkeep").addEventListener("click",function(){
+  const on=document.body.classList.toggle("editing");this.textContent=on?"Done":"Edit";
+});
+
+/* ---- meal planner ---- */
+function renderPlanner(){
+  const wrap=document.getElementById("planner");wrap.innerHTML="";
+  DAYS.forEach(([k,name])=>{
+    const div=document.createElement("div");div.className="plan-day";
+    div.innerHTML='<div class="dname">'+name+'</div><textarea data-day="'+k+'" placeholder="Breakfast · Lunch · Dinner · Snack">'+esc(S.meals[k]||"")+'</textarea>';
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll("textarea").forEach(t=>{
+    t.addEventListener("input",()=>{S.meals[t.dataset.day]=t.value;save();});
+  });
+}
+document.getElementById("clearWeek").addEventListener("click",()=>{
+  if(!confirm("Clear this week's meal plan?"))return;S.meals={};save();renderPlanner();
+});
+function renderGoto(){
+  const ul=document.getElementById("goto");ul.innerHTML="";
+  if(!S.goto.length){ul.innerHTML='<div class="empty">No recipes yet. Paste one to me and I\'ll hand back the macros to save here.</div>';return;}
+  S.goto.forEach(g=>{
+    const li=document.createElement("li");
+    let html='<div class="g-name">'+esc(g.name)+'</div>';
+    if(g.mac)html+='<div class="g-mac">'+esc(g.mac)+'</div>';
+    if(g.link){
+      const safe=/^https?:\/\//i.test(g.link)?g.link:"https://"+g.link;
+      html+='<a class="g-link" href="'+esc(safe)+'" target="_blank" rel="noopener">▶ Open recipe</a>';
+    }
+    if(g.notes)html+='<details><summary>Ingredients / notes</summary><div class="body">'+esc(g.notes)+'</div></details>';
+    html+='<button class="del" data-id="'+g.id+'" aria-label="Remove">✕</button>';
+    li.innerHTML=html;
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll(".del").forEach(b=>b.addEventListener("click",()=>{
+    S.goto=S.goto.filter(g=>String(g.id)!==b.dataset.id);save();renderGoto();
+  }));
+}
+function addMeal(){
+  const name=document.getElementById("rcpName").value.trim();
+  if(!name)return;
+  const link=document.getElementById("rcpLink").value.trim();
+  const mac=document.getElementById("rcpMac").value.trim();
+  const notes=document.getElementById("rcpNotes").value.trim();
+  S.goto.push({id:Date.now(),name:name,mac:mac,link:link,notes:notes});
+  document.getElementById("rcpName").value="";
+  document.getElementById("rcpLink").value="";
+  document.getElementById("rcpMac").value="";
+  document.getElementById("rcpNotes").value="";
+  save();renderGoto();
+}
+document.getElementById("addMeal").addEventListener("click",addMeal);
+
+/* ---- tired & hungry shelf ---- */
+function renderShelf(){
+  const wrap=document.getElementById("shelf");wrap.innerHTML="";
+  S.shelf.forEach((item,i)=>{
+    const el=document.createElement("span");el.className="chip-item";
+    el.innerHTML=esc(item)+'<button class="x" data-i="'+i+'" aria-label="Remove">✕</button>';
+    wrap.appendChild(el);
+  });
+  wrap.querySelectorAll(".x").forEach(b=>b.addEventListener("click",()=>{
+    S.shelf.splice(parseInt(b.dataset.i,10),1);save();renderShelf();
+  }));
+}
+function addShelf(){
+  const inp=document.getElementById("shelfInput");const v=inp.value.trim();if(!v)return;
+  S.shelf.push(v);inp.value="";save();renderShelf();
+}
+document.getElementById("addShelf").addEventListener("click",addShelf);
+document.getElementById("shelfInput").addEventListener("keydown",e=>{if(e.key==="Enter")addShelf();});
+document.getElementById("editShelf").addEventListener("click",function(){
+  const on=document.body.classList.toggle("editing");this.textContent=on?"Done":"Edit";
+});
+
+/* ---- staple grocery list ---- */
+function renderStaples(){
+  const ul=document.getElementById("staples");ul.innerHTML="";
+  S.staples.forEach(s=>{
+    const li=document.createElement("li");li.dataset.need=s.need?"1":"0";
+    li.innerHTML='<span class="box">✓</span><span class="nm">'+esc(s.name)+'</span><button class="x" data-id="'+s.id+'" aria-label="Remove">✕</button>';
+    li.addEventListener("click",e=>{
+      if(e.target.dataset.id){S.staples=S.staples.filter(x=>x.id!==e.target.dataset.id);save();renderStaples();return;}
+      if(document.body.classList.contains("editing"))return;
+      s.need=!s.need;save();renderStaples();
+    });
+    ul.appendChild(li);
+  });
+  const n=S.staples.filter(s=>s.need).length;
+  document.getElementById("buyCount").innerHTML=n?'<b>'+n+'</b> to grab this trip':'Nothing flagged — tap what you\'re low on.';
+}
+function addStaple(){
+  const inp=document.getElementById("stapleInput");const v=inp.value.trim();if(!v)return;
+  S.staples.push({id:"s"+Date.now(),name:v,need:false});inp.value="";save();renderStaples();
+}
+document.getElementById("addStaple").addEventListener("click",addStaple);
+document.getElementById("stapleInput").addEventListener("keydown",e=>{if(e.key==="Enter")addStaple();});
+document.getElementById("editStaples").addEventListener("click",function(){
+  const on=document.body.classList.toggle("editing");this.textContent=on?"Done":"Edit";
+});
+
+/* ---- breathing ---- */
+const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const orb=document.getElementById("orb"),orbTxt=document.getElementById("orbTxt");
+const cue=document.getElementById("breathCue"),count=document.getElementById("breathCount"),bBtn=document.getElementById("breathBtn");
+const CYCLES=5;let running=false,timers=[];
+function clr(){timers.forEach(clearTimeout);timers=[];}
+function setOrb(s,ms){if(reduce){orb.style.opacity=s>0.9?"1":"0.5";return;}orb.style.transitionDuration=ms+"ms";orb.style.transform="scale("+s+")";}
+function cycle(i){
+  if(i>CYCLES){finishBreath();return;}
+  count.textContent="Round "+i+" of "+CYCLES;
+  cue.textContent="Breathe in…";orbTxt.textContent="in";setOrb(1.0,3000);
+  timers.push(setTimeout(()=>{
+    cue.textContent="…and a little more";setOrb(1.18,1200);
+    timers.push(setTimeout(()=>{
+      cue.textContent="Slowly out…";orbTxt.textContent="out";setOrb(0.6,6000);
+      timers.push(setTimeout(()=>cycle(i+1),6200));
+    },1300));
+  },3100));
+}
+function start(){running=true;bBtn.textContent="Stop";bBtn.classList.add("ghost");cycle(1);}
+function finishBreath(){
+  clr();running=false;bBtn.textContent="Begin";bBtn.classList.remove("ghost");
+  setOrb(0.6,800);orbTxt.textContent="";cue.textContent="Nice. Notice you're a little calmer.";count.textContent="";
+  const key=tkey();if(!S.days[key])S.days[key]={};if(S.habits.some(h=>h.id==="breathed"))S.days[key].breathed=true;
+  save();renderTasks();renderWeek();refreshStreak();
+}
+function stop(){clr();running=false;bBtn.textContent="Begin";bBtn.classList.remove("ghost");setOrb(0.6,600);orbTxt.textContent="";cue.textContent="Whenever you're ready.";count.textContent="";}
+bBtn.addEventListener("click",()=>{running?stop():start();});
+
+/* ---- reset ---- */
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  if(!confirm("Clear ALL data — habits, streaks, lines, meals? Can't be undone."))return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  S={habits:null,upkeepDefs:null,days:{},altitudes:[],upkeep:{},meals:{},goto:null,best:0,shelf:null,staples:null};
+  load();renderAll();
+});
+
+function renderAll(){
+  greeting();refreshStreak();renderWeek();renderTasks();renderLines();
+  renderUpkeep();renderPlanner();renderGoto();renderShelf();renderStaples();
+}
+load();renderAll();save();
+</script>
+</body>
+</html>
