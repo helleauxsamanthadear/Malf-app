@@ -230,6 +230,10 @@
     color:var(--moon);font-family:inherit;font-size:14px;padding:10px 12px;resize:vertical;min-height:52px;line-height:1.5}
   .plan-day textarea::placeholder{color:var(--faint)}
   .plan-day textarea:focus{outline:none;border-color:var(--amethyst)}
+  .needs-box textarea{width:100%;background:var(--veil);border:1px solid var(--line);border-radius:12px;
+    color:var(--moon);font-family:inherit;font-size:14px;padding:12px 13px;resize:vertical;min-height:72px;line-height:1.5}
+  .needs-box textarea::placeholder{color:var(--faint)}
+  .needs-box textarea:focus{outline:none;border-color:var(--amethyst)}
   #goto{list-style:none;margin:8px 0 0;padding:0}
   #goto li{background:var(--veil);border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin-bottom:8px;position:relative}
   #goto .g-name{font-size:14.5px;color:var(--moon);font-weight:600;padding-right:20px}
@@ -250,6 +254,57 @@
   .recipe-add input:focus,.recipe-add textarea:focus{outline:none;border-color:var(--amethyst)}
   .recipe-add button{width:100%;background:var(--amethyst);border:none;color:#100a24;font-weight:700;font-size:14px;
     padding:11px;border-radius:9px;cursor:pointer}
+
+  /* focus tab */
+  .cap{background:linear-gradient(180deg,var(--veil),var(--night-2));border:1px solid var(--line);
+    border-radius:var(--radius);padding:14px;margin:4px 0 8px}
+  .cap textarea{width:100%;background:var(--night-2);border:1px solid var(--line);border-radius:11px;
+    color:var(--moon);font-family:inherit;font-size:15px;padding:12px 13px;resize:none;line-height:1.45}
+  .cap textarea::placeholder{color:var(--faint)}
+  .cap textarea:focus{outline:none;border-color:var(--amethyst)}
+  .cap .cap-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:10px}
+  .cap .hint{font-size:11.5px;color:var(--faint)}
+  .cap button{background:var(--amethyst);border:none;color:#100a24;font-weight:700;font-size:14px;
+    padding:9px 18px;border-radius:10px;cursor:pointer;flex-shrink:0}
+  .feed{list-style:none;margin:6px 0 0;padding:0}
+  .feed li{background:var(--veil);border:1px solid var(--line);border-left:3px solid var(--amethyst-soft);
+    border-radius:11px;padding:11px 13px;margin-bottom:9px}
+  .feed .f-text{font-size:14.5px;color:var(--moon);line-height:1.45;white-space:pre-wrap}
+  .feed .f-row{display:flex;align-items:center;justify-content:space-between;margin-top:9px;gap:8px}
+  .feed .f-time{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);flex-shrink:0}
+  .feed .f-acts{display:flex;gap:6px}
+  .feed .f-acts button{background:var(--night-2);border:1px solid var(--line);border-radius:8px;
+    color:var(--mist);font-family:inherit;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer}
+  .feed .f-acts .promote{color:#c3b2ff;border-color:var(--amethyst-soft)}
+  .feed .f-acts .promote:disabled{opacity:.35;cursor:default}
+  .feed .f-acts .trash:hover{color:var(--rose);border-color:var(--rose)}
+  .feed-empty{text-align:center;color:var(--faint);font-size:13.5px;padding:22px 16px;border:1px dashed var(--line);border-radius:12px}
+  .feed-empty .serif{color:var(--mist);font-style:italic;font-size:15px;display:block;margin-bottom:4px}
+
+  .big3-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 4px}
+  .big3-head h2.sec{margin:0}
+  .done-chip{font-size:12px;color:var(--emerald);font-weight:700;background:var(--emerald-soft);padding:4px 11px;border-radius:20px;flex-shrink:0}
+  .slot{display:flex;align-items:center;gap:12px;background:var(--veil);border:1px solid var(--line);
+    border-radius:13px;padding:13px 14px;margin-bottom:9px}
+  .slot .num{font-family:Georgia,serif;font-size:15px;color:var(--amethyst);font-weight:700;min-width:14px}
+  .slot .box{width:23px;height:23px;border-radius:50%;border:1.6px solid var(--faint);flex-shrink:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent;transition:all .18s}
+  .slot .box:hover{border-color:var(--emerald)}
+  .slot .s-text{flex:1;font-size:15px;color:var(--moon)}
+  .slot .x{background:none;border:none;color:var(--faint);font-size:16px;cursor:pointer;flex-shrink:0}
+  .slot .x:hover{color:var(--rose)}
+  .slot.empty{border-style:dashed}
+  .slot.empty .num{color:var(--faint)}
+  .slot.empty .s-text{color:var(--faint);font-style:italic;font-size:14px}
+  .big3-add{display:flex;gap:9px;margin-top:4px}
+  .big3-add input{flex:1;background:var(--night-2);border:1px solid var(--line);border-radius:11px;
+    padding:12px 13px;color:var(--moon);font-family:inherit;font-size:14.5px}
+  .big3-add input::placeholder{color:var(--faint)}
+  .big3-add input:focus{outline:none;border-color:var(--amethyst)}
+  .big3-add button{background:var(--amethyst);border:none;color:#100a24;font-weight:700;font-size:19px;width:48px;border-radius:11px;cursor:pointer}
+  .wip-note{background:var(--emerald-soft);border:1px solid var(--emerald-soft);border-radius:11px;
+    padding:11px 14px;color:#bfeeda;font-size:13px;margin-top:4px}
+  .wip-note b{color:#eafff6}
 
   .soft-note{background:var(--night-2);border:1px solid var(--line);border-radius:14px;padding:15px 16px;
     margin:22px 0 10px;color:var(--mist);font-size:13px;line-height:1.6}
@@ -367,37 +422,6 @@
       </div>
     </details>
 
-    <details class="card">
-      <summary><span class="ic">🏔️</span><span class="c-title">Cold-weather trip kit<small>Snow, altitude &amp; dry air — Louisiana skin's first winter</small></span><span class="caret">▶</span></summary>
-      <div class="card-body">
-        <p>Cold + wind + altitude + indoor heat is <i>brutally</i> drying, and the sun reflects off snow. The whole game is hydrate hard, protect, and go cream over powder.</p>
-        <h4>Grab before you go</h4>
-        <ul>
-          <li><b>Heavier night moisturizer</b> — CeraVe tub or a face oil over Toleriane</li>
-          <li><b>Hydrating/HA serum</b> — on damp skin, under moisturizer</li>
-          <li><b>Heavy lip balm ×2</b> (Aquaphor) — one lives in your coat pocket</li>
-          <li><b>Thick hand cream</b> + richer <b>body lotion</b></li>
-          <li><b>Waterproof mascara</b> (wind = watery eyes)</li>
-          <li><b>Cream blush</b> (powder goes chalky in the cold)</li>
-          <li><b>Verb Hydrate conditioner</b> + a deep mask + hair oil for ends</li>
-          <li>Confirm packed: <b>EltaMD SPF</b> — regular + tinted</li>
-        </ul>
-        <h4>While there</h4>
-        <ul>
-          <li><b>Pause Differin, azelaic only every few nights.</b> Cold + dry + actives = flaking. Lead with hydration; resume home.</li>
-          <li><b>SPF every day, reapply</b> — snow reflects ~80% of UV, altitude intensifies it. Snow sunburn is real.</li>
-          <li><b>Balm on lips constantly.</b> Warm (not scalding) showers; moisturize within a minute of getting out.</li>
-          <li><b>Drink way more water than feels necessary</b> — altitude dehydrates + mild headaches.</li>
-        </ul>
-        <h4>Hair &amp; face</h4>
-        <ul>
-          <li>Satin-lined beanie if you can — regular beanies = flat, static waves. Refresh with water + leave-in after the hat.</li>
-          <li>Low-effort day face: <b>tinted SPF + cream blush + berry tinted balm.</b> Photographs great on snow.</li>
-          <li>Save the <b>bold berry/wine lip</b> for dinners out.</li>
-        </ul>
-      </div>
-    </details>
-
     <div class="hd-row">
       <h2 class="sec serif">Maintenance</h2>
       <button class="mini-btn" id="editUpkeep">Edit</button>
@@ -458,6 +482,17 @@
         </ul>
       </div>
     </details>
+
+    <div class="hd-row" style="margin-top:24px"><h2 class="sec serif">This week's outfits</h2>
+      <button class="mini-btn" id="clearOutfits">Clear</button></div>
+    <p class="lede">Plan it so it's picked, clean, and findable. Define the waist, one colour moment, silver.</p>
+    <div id="outfitPlanner"></div>
+
+    <h2 class="sec serif" style="margin-top:22px">This week's needs</h2>
+    <p class="lede">Tally what has to be clean — workout fits, work tops — so laundry keeps up and nothing's missing.</p>
+    <div class="needs-box">
+      <textarea id="styleNeeds" placeholder="e.g. 3 workout outfits · 5 work tops · wash the wine sweater · find black tights"></textarea>
+    </div>
   </section>
 
   <!-- ============ FOOD ============ -->
@@ -556,12 +591,48 @@
     <p class="foot">Yours, saved on this device only.<br><button id="resetBtn">Reset everything</button></p>
   </section>
 
+  <!-- ============ FOCUS ============ -->
+  <section class="view" data-tab="focus">
+    <header><span class="eyebrow">Out of your head · onto the page</span><h1 class="serif">Focus</h1>
+      <p id="hello6">Dump everything here so your brain can stop holding it. Then do three things. That's the whole system.</p></header>
+
+    <h2 class="sec serif">Brain dump</h2>
+    <p class="lede">Think it → drop it → forget it. Work and home, all one place.</p>
+    <div class="cap">
+      <textarea id="capInput" placeholder="What's rattling around? (email Karen · buy dog food · that idea…)" maxlength="280" rows="2"></textarea>
+      <div class="cap-row"><span class="hint">Everything lands here. Sort it later.</span><button id="capBtn">Drop it</button></div>
+    </div>
+    <ul class="feed" id="feed"></ul>
+
+    <div class="big3-head"><h2 class="sec serif">Today's Big 3</h2><span class="done-chip" id="doneChip">0 done</span></div>
+    <p class="lede">Three that matter today. Finish beats start. No 4th until one's done.</p>
+    <div id="big3"></div>
+    <div id="big3Add"></div>
+
+    <details class="card" style="margin-top:22px">
+      <summary><span class="ic">🧭</span><span class="c-title">The rhythm<small>Tiny rituals that keep it running</small></span><span class="caret">▶</span></summary>
+      <div class="card-body">
+        <div class="step"><span class="n">1</span><div><b>Morning (2 min, with coffee):</b> skim the dump, pick your Big 3.</div></div>
+        <div class="step"><span class="n">2</span><div><b>All day:</b> new thought? → straight to the dump. Don't hold it.</div></div>
+        <div class="step"><span class="n">3</span><div><b>End of day (2 min):</b> dump anything leftover, glance at tomorrow.</div></div>
+        <div class="step"><span class="n">4</span><div><b>Weekly reset (15 min, Sun):</b> clear the dump, rough-sort the week. The "wash day" of your week.</div></div>
+        <h4>The two rules that make it work</h4>
+        <ul>
+          <li><b>Make each Big 3 small enough to finish today.</b> "Organize the office" is a project — pick the next one step.</li>
+          <li><b>Don't start a 4th until one's done.</b> That's the actual cure for start-don't-finish.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
 </div>
 
 <!-- tab bar -->
 <nav class="tabs" role="tablist">
   <button class="tab" data-go="today" aria-selected="true" role="tab">
     <svg viewBox="0 0 24 24"><path d="M20 14a8 8 0 1 1-9-9 6.5 6.5 0 0 0 9 9z"/></svg>Today</button>
+  <button class="tab" data-go="focus" role="tab">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>Focus</button>
   <button class="tab" data-go="beauty" role="tab">
     <svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.9L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.1z"/><circle cx="18" cy="17" r="1.4"/><circle cx="6" cy="16" r="1"/></svg>Beauty</button>
   <button class="tab" data-go="style" role="tab">
@@ -577,6 +648,7 @@
 const KEY="mal-care-v2";
 const DEFAULT_HABITS=[
   {id:"moved",label:"Moved my body",note:"The lunch walk counts."},
+  {id:"dogwalk",label:"Morning dog walk",note:"Margeaux, Todd, or Delta 🐾 — birding pace counts"},
   {id:"skinAM",label:"Skincare — AM",note:"Cleanse · moisturize · SPF"},
   {id:"skinPM",label:"Skincare — PM",note:"Cleanse · treat · moisturize"},
   {id:"journaled",label:"Journaled",note:"Vent, then altitude line"},
@@ -610,6 +682,20 @@ function load(){
   if(typeof S.best!=="number")S.best=0;
   if(!S.shelf)S.shelf=DEFAULT_SHELF.slice();
   if(!S.staples)S.staples=DEFAULT_STAPLES.map((n,i)=>({id:"s"+i,name:n,need:false}));
+  if(!S.inbox)S.inbox=[];
+  if(!S.big3)S.big3=[];
+  if(typeof S.focusDone!=="number")S.focusDone=0;
+  if(!S.outfits)S.outfits={};
+  if(typeof S.styleNeeds!=="string")S.styleNeeds="";
+  // one-time: add morning dog walk habit for existing users (won't re-add if deleted later)
+  if(!S.mig_dogwalk){
+    S.mig_dogwalk=true;
+    if(S.habits&&!S.habits.some(h=>h.id==="dogwalk")){
+      const i=S.habits.findIndex(h=>h.id==="moved");
+      const walk={id:"dogwalk",label:"Morning dog walk",note:"Margeaux, Todd, or Delta 🐾 — birding pace counts"};
+      if(i>=0)S.habits.splice(i+1,0,walk);else S.habits.push(walk);
+    }
+  }
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
@@ -896,17 +982,119 @@ function finishBreath(){
 function stop(){clr();running=false;bBtn.textContent="Begin";bBtn.classList.remove("ghost");setOrb(0.6,600);orbTxt.textContent="";cue.textContent="Whenever you're ready.";count.textContent="";}
 bBtn.addEventListener("click",()=>{running?stop():start();});
 
+/* ---- focus: brain dump ---- */
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return"just now";
+  const m=Math.floor(s/60);if(m<60)return m+"m ago";
+  const h=Math.floor(m/60);if(h<24)return h+"h ago";
+  const d=Math.floor(h/24);if(d<7)return d+"d ago";
+  return fmt(tkey(new Date(ts)));
+}
+function renderFeed(){
+  const ul=document.getElementById("feed");ul.innerHTML="";
+  if(!S.inbox.length){ul.innerHTML='<div class="feed-empty"><span class="serif">Head empty. Good.</span>Whatever pops up next — drop it here instead of holding it.</div>';return;}
+  const full=S.big3.length>=3;
+  S.inbox.forEach(it=>{
+    const li=document.createElement("li");
+    li.innerHTML='<div class="f-text">'+esc(it.text)+'</div>'+
+      '<div class="f-row"><span class="f-time">'+timeAgo(it.ts)+'</span>'+
+      '<span class="f-acts"><button class="promote" data-id="'+it.id+'"'+(full?' disabled title="Big 3 full — finish one first"':'')+'>→ Big 3</button>'+
+      '<button class="trash" data-id="'+it.id+'" aria-label="Delete">✕</button></span></div>';
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll(".promote").forEach(b=>{if(!b.disabled)b.addEventListener("click",()=>promote(b.dataset.id));});
+  ul.querySelectorAll(".trash").forEach(b=>b.addEventListener("click",()=>{
+    S.inbox=S.inbox.filter(x=>String(x.id)!==b.dataset.id);save();renderFeed();
+  }));
+}
+function addCapture(){
+  const inp=document.getElementById("capInput");const v=inp.value.trim();if(!v)return;
+  S.inbox.unshift({id:Date.now(),text:v,ts:Date.now()});inp.value="";save();renderFeed();
+}
+document.getElementById("capBtn").addEventListener("click",addCapture);
+document.getElementById("capInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();addCapture();}
+});
+
+/* ---- focus: big 3 ---- */
+function renderBig3(){
+  const wrap=document.getElementById("big3");wrap.innerHTML="";
+  for(let i=0;i<3;i++){
+    const item=S.big3[i];const div=document.createElement("div");
+    if(item){
+      div.className="slot";
+      div.innerHTML='<span class="num">'+(i+1)+'</span><span class="box" data-id="'+item.id+'" title="Mark done">✓</span>'+
+        '<span class="s-text">'+esc(item.text)+'</span><button class="x" data-id="'+item.id+'" aria-label="Remove">✕</button>';
+    }else{
+      div.className="slot empty";
+      div.innerHTML='<span class="num">'+(i+1)+'</span><span class="s-text">open slot</span>';
+    }
+    wrap.appendChild(div);
+  }
+  wrap.querySelectorAll(".box").forEach(b=>b.addEventListener("click",()=>finishBig3(b.dataset.id)));
+  wrap.querySelectorAll(".x").forEach(b=>b.addEventListener("click",()=>{
+    S.big3=S.big3.filter(x=>String(x.id)!==b.dataset.id);save();renderBig3();renderFeed();
+  }));
+  const add=document.getElementById("big3Add");
+  if(S.big3.length>=3){
+    add.innerHTML='<div class="wip-note"><b>Three locked in.</b> Finish one before adding another — that\'s the whole trick.</div>';
+  }else{
+    add.innerHTML='<div class="big3-add"><input id="big3Input" type="text" placeholder="Add one that matters today…" maxlength="120"><button id="big3AddBtn" aria-label="Add">+</button></div>';
+    document.getElementById("big3AddBtn").addEventListener("click",addBig3);
+    document.getElementById("big3Input").addEventListener("keydown",e=>{if(e.key==="Enter")addBig3();});
+  }
+  document.getElementById("doneChip").textContent=S.focusDone+" done";
+}
+function addBig3(){
+  if(S.big3.length>=3)return;
+  const inp=document.getElementById("big3Input");const v=inp.value.trim();if(!v)return;
+  S.big3.push({id:Date.now(),text:v});save();renderBig3();renderFeed();
+}
+function promote(id){
+  if(S.big3.length>=3)return;
+  const it=S.inbox.find(x=>String(x.id)===String(id));if(!it)return;
+  S.big3.push({id:Date.now(),text:it.text});
+  S.inbox=S.inbox.filter(x=>String(x.id)!==String(id));
+  save();renderBig3();renderFeed();
+}
+function finishBig3(id){
+  S.big3=S.big3.filter(x=>String(x.id)!==String(id));
+  S.focusDone++;save();renderBig3();renderFeed();
+}
+
+/* ---- style: outfit planner ---- */
+function renderOutfits(){
+  const wrap=document.getElementById("outfitPlanner");wrap.innerHTML="";
+  DAYS.forEach(([k,name])=>{
+    const div=document.createElement("div");div.className="plan-day";
+    div.innerHTML='<div class="dname">'+name+'</div><textarea data-oday="'+k+'" placeholder="Top · bottom · layer · shoes · jewelry">'+esc(S.outfits[k]||"")+'</textarea>';
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll("textarea").forEach(t=>{
+    t.addEventListener("input",()=>{S.outfits[t.dataset.oday]=t.value;save();});
+  });
+  const needs=document.getElementById("styleNeeds");
+  needs.value=S.styleNeeds||"";
+  needs.oninput=()=>{S.styleNeeds=needs.value;save();};
+}
+document.getElementById("clearOutfits").addEventListener("click",()=>{
+  if(!confirm("Clear this week's outfit plan? (keeps your needs list)"))return;
+  S.outfits={};save();renderOutfits();
+});
+
 /* ---- reset ---- */
 document.getElementById("resetBtn").addEventListener("click",()=>{
-  if(!confirm("Clear ALL data — habits, streaks, lines, meals? Can't be undone."))return;
+  if(!confirm("Clear ALL data — habits, streaks, lines, meals, focus? Can't be undone."))return;
   try{localStorage.removeItem(KEY);}catch(e){}
-  S={habits:null,upkeepDefs:null,days:{},altitudes:[],upkeep:{},meals:{},goto:null,best:0,shelf:null,staples:null};
+  S={habits:null,upkeepDefs:null,days:{},altitudes:[],upkeep:{},meals:{},goto:null,best:0,shelf:null,staples:null,inbox:[],big3:[],focusDone:0,outfits:{},styleNeeds:""};
   load();renderAll();
 });
 
 function renderAll(){
   greeting();refreshStreak();renderWeek();renderTasks();renderLines();
   renderUpkeep();renderPlanner();renderGoto();renderShelf();renderStaples();
+  renderFeed();renderBig3();renderOutfits();
 }
 load();renderAll();save();
 </script>
